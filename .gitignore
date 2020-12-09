@@ -1,3 +1,5 @@
+spark-3.0.1-bin-hadoop2.7/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
