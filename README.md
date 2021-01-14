@@ -42,7 +42,7 @@ The testing phase can also be distributed with the same fashion of the training 
 ## How to (with our terraform project)
 0. Download and install Terraform
 1. Download the terraform project from [3] and unzip it
-2. Open the terraform project folder "spark-terraform/"
+2. Open the terraform project folder "spark-terraform-master/"
 3. Create a file named "terraform.tfvars" and paste this:
 ```
 access_key="<YOUR AWS ACCESS KEY>"
@@ -54,17 +54,17 @@ amz_key_path="TransE.pem"
 **Note:** without setting the other variables (you can find it on variables.tf), terraform will create a cluster on region "us-east-1", with 1 namenode, 3 datanode and with an instance type of m5.xlarge.
 
 3. Download the files from this repository
-4. Put the files of this repository into the "app" terraform project folder (e.g. example.py should be in spark-terraform/app/example.py and so on for all the other files)
-5. Create a zip archive of the TransEmodule and put it on spark-terraform/app/TransEmodule.zip
+4. Put the files of this repository into the "app" terraform project folder (e.g. example.py should be in spark-terraform-master/app/example.py and so on for all the other files)
+5. Create a zip archive of the TransEmodule folder and put it on spark-terraform-master/app/TransEmodule.zip
 6. Open a terminal and generate a new ssh-key
 ```
-ssh-keygen -f <PATH_TO_SPARK_TERRAFORM>/spark-terraform/localkey
+ssh-keygen -f <PATH_TO_SPARK_TERRAFORM>/spark-terraform-master/localkey
 ```
-Where `<PATH_TO_SPARK_TERRAFORM>` is the path to the /spark-terraform/ folder (e.g. /home/user/)
+Where `<PATH_TO_SPARK_TERRAFORM>` is the path to the /spark-terraform-master/ folder (e.g. /home/user/)
 
-7. Login to AWS and create a key pairs named **TransE** in **PEM** file format. Follow the guide on [AWS DOCS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair). Download the key and put it in the spark-terraform/ folder.
+7. Login to AWS and create a key pairs named **TransE** in **PEM** file format. Follow the guide on [AWS DOCS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair). Download the key and put it in the spark-terraform-master/ folder.
 
-8. Open a terminal and go to the spark-terraform/ folder, execute the command
+8. Open a terminal and go to the spark-terraform-master/ folder, execute the command
  ```
  terraform init
  terraform apply
@@ -73,7 +73,7 @@ Where `<PATH_TO_SPARK_TERRAFORM>` is the path to the /spark-terraform/ folder (e
 
 9. Connect via ssh to all your instances via
  ```
-ssh -i <PATH_TO_SPARK_TERRAFORM>/spark-terraform/TransE.pem ubuntu@<PUBLIC DNS>
+ssh -i <PATH_TO_SPARK_TERRAFORM>/spark-terraform-master/TransE.pem ubuntu@<PUBLIC DNS>
  ```
 
 10. (first) execute on the master (one by one):
@@ -90,9 +90,9 @@ And (after) execute on the slaves:
 $SPARK_HOME/sbin/start-slave.sh spark://s01:7077
 ```
 
-11. You are ready to execute TransE! Execute this comand on the master
+11. You are ready to execute TransE! Execute this command on the master
 ```
-/opt/spark-3.0.1-bin-hadoop2.7/bin/spark-submit --deploy-mode cluster --master yarn --executor-cores 4 --executor-memory 16g example.py
+/opt/spark-3.0.1-bin-hadoop2.7/bin/spark-submit --master spark://s01:7077  --executor-cores 4 --executor-memory 14g example.py
 ```
 
 12. Remember to do `terraform destroy` to delete your EC2 instances
