@@ -7,7 +7,7 @@
 5. [How to (with our terraform project)](#How-to-with-our-terraform-project)
 6. [Experimental results](#Experimental-results)
 7. [Contributors](#Contributors)
-8. [References](#References])
+8. [References](#References)
 
 ## Introduction
 This project implements the Translating Embeddings for Modeling Multi-relational Data (TransE) \[1\] in Spark \[2\] via the python API (pyspark). TransE is a model for prediction of relationships in knowledge graphs, which given an head, a label and a tail, of the form *(h, l, t)* tries to modifies the embedding to make the invariant *h+l ≈ t* true. The relationships are represented like translations, thus the invariant, if true, means that if h+l is near t, then t must be related to h and t. For example in *bears + like ≈ honey*, t is related to h and t, since bears like honey, the same is not true for *bears + like ≈ stones*. 
