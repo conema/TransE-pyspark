@@ -1,8 +1,8 @@
 import findspark
 from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
-import utils
-from TransE import TransE
+from TransEmodule import utils
+from TransEmodule.TransE import TransE
 
 findspark.init()
 

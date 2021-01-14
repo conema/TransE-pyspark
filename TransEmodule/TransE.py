@@ -2,8 +2,8 @@ import numpy as np
 from math import sqrt, ceil
 import random
 import time
-from Embedding import Embedding
-import utils
+from TransEmodule.Embedding import Embedding
+from TransEmodule import utils
 
 
 class TransE:
