@@ -110,6 +110,8 @@ if __name__ == "__main__":
 
     sc = SparkContext(conf=conf).getOrCreate()
 
+    sc.addPyFile('TransEmodule.zip')
+
     entity_embedding, label_embedding = utils.restore('/home/ubuntu/transe/entity_embedding_999.pkl',
                                                       '/home/ubuntu/transe/label_embedding_999.pkl')
 

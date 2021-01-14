@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     sc.setLogLevel("ERROR")
 
-    sc.addPyFile('Embedding.py')
+    sc.addPyFile('TransEmodule.zip')
 
     ds_to_id, entities_to_id_map, label_to_id_map = utils.load_dataset(sc, 'hdfs://s01:9000/train2.tsv')
 

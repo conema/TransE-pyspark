@@ -272,8 +272,8 @@ class TransE:
             # update the loss value
             L_AC += gamma_margin + distance_naive - distance_corrupted
 
-            # do gradient descend step
-            TransE.gradient_descend(triplet_naive, triplet_corrupted, distance,
+            # do gradient descent step
+            TransE.gradient_descent(triplet_naive, triplet_corrupted, distance,
                                     entity_embedding_local,
                                     label_embedding_local,
                                     learning_rate)
@@ -305,11 +305,11 @@ class TransE:
             raise Exception('Distance must be L1 or L2')
 
     @staticmethod
-    def gradient_descend(triplet_naive, triplet_corrupted, distance,
+    def gradient_descent(triplet_naive, triplet_corrupted, distance,
                          entity_embedding_local, label_embedding_local,
                          learning_rate):
         """
-          Calculate the gradient of the cost function and do the descend
+          Calculate the gradient of the cost function and do the descent
 
           The cost function is divided in two, so we compute the gradient of
           the naive triplet and separately the gradient of the corrupted one.
