@@ -1,4 +1,4 @@
-# TransE pyspark
+# TransE PySpark
 
 1. [Introduction](#introduction)
 2. [Project structure](#Project-structure)
@@ -48,7 +48,8 @@ The testing phase can also be distributed with the same fashion of the training 
 access_key="<YOUR AWS ACCESS KEY>"
 secret_key="<YOUR AWS SECRET KEY>"
 token="<YOUR AWS TOKEN>"
-key_name="TransE"
+aws_key_name="TransE"
+amz_key_path="TransE.pem"
 ```
 **Note:** without setting the other variables (you can find it on variables.tf), terraform will create a cluster on region "us-east-1", with 1 namenode, 3 datanode and with an instance type of m5.xlarge.
 
@@ -65,16 +66,17 @@ Where `<PATH_TO_SPARK_TERRAFORM>` is the path to the /spark-terraform/ folder (e
 
 8. Open a terminal and go to the spark-terraform/ folder, execute the command
  ```
+ terraform init
  terraform apply
  ```
- After a while (wait!) it should print some public DNS in a green color, these are the public dns of your istances.
+ After a while (wait!) it should print some public DNS in a green color, these are the public dns of your instances.
 
-9. Connect via ssh to all your istances via
+9. Connect via ssh to all your instances via
  ```
 ssh -i <PATH_TO_SPARK_TERRAFORM>/spark-terraform/TransE.pem ubuntu@<PUBLIC DNS>
  ```
 
-10. (first) execute on the master:
+10. (first) execute on the master (one by one):
  ```
 $HADOOP_HOME/sbin/start-dfs.sh
 $HADOOP_HOME/sbin/start-yarn.sh
@@ -83,15 +85,17 @@ $SPARK_HOME/sbin/start-master.sh
 hdfs dfs -put /home/ubuntu/dataset/train2.tsv /train2.tsv
 hdfs dfs -put /home/ubuntu/dataset/test2.tsv /test2.tsv
  ```
-And (after) execute on the salves slaves:
+And (after) execute on the slaves:
 ```
 $SPARK_HOME/sbin/start-slave.sh spark://s01:7077
 ```
 
 11. You are ready to execute TransE! Execute this comand on the master
 ```
-/opt/spark-3.0.1-bin-hadoop2.7/bin/spark-submit --deploy-mode cluster --master yarn --executor-cores 4 --executor-memory 16g app/example.py
+/opt/spark-3.0.1-bin-hadoop2.7/bin/spark-submit --deploy-mode cluster --master yarn --executor-cores 4 --executor-memory 16g example.py
 ```
+
+12. Remember to do `terraform destroy` to delete your EC2 instances
 
 **Note:** The steps from 0 to 7 (included) are needed only on the first execution ever
 
