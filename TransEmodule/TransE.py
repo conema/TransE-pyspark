@@ -85,6 +85,8 @@ class TransE:
           Stochastic gradient descent in mini-batch mode
         """
 
+        random.shuffle(trainset)
+
         # cache the trainset in memory accross operations
         trainset_RDD = self._spark_context.parallelize(trainset).persist()
 
@@ -115,8 +117,9 @@ class TransE:
                 label_embedding_BC = self._spark_context.broadcast(self._label_embedding)
 
                 # sample a new batch of size b
-                batch_RDD = trainset_RDD.sample(withReplacement=True,
-                                                fraction=b)
+                batch_RDD = trainset_RDD.sample(withReplacement=False,
+                                                fraction=b,
+                                                seed=int(time.time()))
 
                 distance = self._distance
                 learning_rate = self._learning_rate
@@ -179,6 +182,8 @@ class TransE:
         entity_embedding_local = {}
         label_embedding_local = {}
 
+        random.seed()
+
         for triplet in partition:
             # add local embeddings only if they are not in the dict
             # if they are, they were computed in a previously iteration
@@ -207,7 +212,7 @@ class TransE:
                               learning_rate, gamma_margin, L_AC)
 
             entity_embedding_local[head].normalize()
-            label_embedding_local[label].normalize()
+            #label_embedding_local[label].normalize()
             entity_embedding_local[tail].normalize()
             entity_embedding_local[corrupted].normalize()
         yield (entity_embedding_local, label_embedding_local)
@@ -292,7 +297,7 @@ class TransE:
 
         if distance == 'L1':
             return np.sum(
-                np.absolute(
+                np.fabs(
                     head_vector + relation_vector - tail_vector
                 )
             )
@@ -335,14 +340,14 @@ class TransE:
         head_corrupted, label_corrupted, tail_corrupted = TransE.open_triplet(triplet_corrupted)
 
         # note the minus!
-        gradient = -TransE.gradient(head_corrupted, label_corrupted,
+        gradient_corrupted = -TransE.gradient(head_corrupted, label_corrupted,
                                     tail_corrupted, distance,
                                     entity_embedding_local,
                                     label_embedding_local)
 
-        entity_embedding_local[head_corrupted].vector += (learning_rate * gradient)
-        label_embedding_local[label_corrupted].vector += (learning_rate * gradient)
-        entity_embedding_local[tail_corrupted].vector -= (learning_rate * gradient)
+        entity_embedding_local[head_corrupted].vector += (learning_rate * gradient_corrupted)
+        label_embedding_local[label_corrupted].vector += (learning_rate * gradient_corrupted)
+        entity_embedding_local[tail_corrupted].vector -= (learning_rate * gradient_corrupted)
 
     @staticmethod
     def gradient(head, label, tail,
@@ -356,7 +361,7 @@ class TransE:
                       label_embedding_local[label].vector)
 
         if distance == "L1":
-            gradient[gradient > 0] = 1
+            gradient[gradient >= 0] = 1
             gradient[gradient < 0] = -1
         elif distance != "L2":
             raise Exception('Distance must be L1 or L2')
