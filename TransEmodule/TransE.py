@@ -4,13 +4,14 @@ import random
 import time
 from TransEmodule.Embedding import Embedding
 from TransEmodule import utils
+import copy
 
 
 class TransE:
     """
       Translating Embeddings (TransE) for Modeling Multi-relational Data
 
-      spark_context: the spark context to distribuite the computation
+      spark_context: the spark context to distribute the computation
       n_epochs: number of epochs to run
       n_batches: number of batches
       gamma_margin: TransE margin hyperparameter (>0, gamma)
@@ -68,7 +69,7 @@ class TransE:
         self._label_size = len(label_to_id_map)
         self._trainset_size = len(trainset)
 
-        # initalization step
+        # initialization step
         if self._entity_embedding is None or self._label_embedding is None:
             self._initialize()
         else:
@@ -102,7 +103,7 @@ class TransE:
 
             start = time.time()
 
-            if epoch % 50 == 0 and self._path is not None:
+            if (epoch+1) % 50 == 0 and self._path is not None:
                 utils.backup(self._entity_embedding,
                              self._label_embedding,
                              epoch, self._path)
@@ -160,10 +161,10 @@ class TransE:
 
         for embedding_vector in new_embeddings_collected:
             for e_key, e_embedding in embedding_vector[0].items():
-                self._entity_embedding.vector[e_key] = e_embedding.vector
+                self._entity_embedding.vector[e_key] = copy.deepcopy(e_embedding.vector)
 
             for l_key, l_embedding in embedding_vector[1].items():
-                self._label_embedding.vector[l_key] = l_embedding.vector
+                self._label_embedding.vector[l_key] = copy.deepcopy(l_embedding.vector)
 
     @staticmethod
     def corrupt_minimize(trainset_dict_BC, partition, distance,
@@ -180,7 +181,7 @@ class TransE:
 
         for triplet in partition:
             # add local embeddings only if they are not in the dict
-            # if they are, they were computed in a previosly iteration
+            # if they are, they were computed in a previously iteration
             head, label, tail = TransE.open_triplet(triplet)
             if head not in entity_embedding_local:
                 entity_embedding_local[head] = Embedding(
@@ -206,7 +207,7 @@ class TransE:
                               learning_rate, gamma_margin, L_AC)
 
             entity_embedding_local[head].normalize()
-            # label_embedding_local[label].normalize()
+            label_embedding_local[label].normalize()
             entity_embedding_local[tail].normalize()
             entity_embedding_local[corrupted].normalize()
         yield (entity_embedding_local, label_embedding_local)
@@ -240,8 +241,8 @@ class TransE:
     @staticmethod
     def corrupt_triplet(trainset_dict_BC, element, entity_size):
         """
-            Returns a corrupt triplet, it may corrup
-            t the first o second entities (random one)
+            Returns a corrupt triplet, it may corrupt
+            the first o second entities (random one)
         """
         entity_to_corrupt = random.randrange(0, 3, 2)
         corrupted_triplet, new_entity = TransE.generate_corrupted_triplet(

@@ -76,19 +76,17 @@ Where `<PATH_TO_SPARK_TERRAFORM>` is the path to the /spark-terraform-master/ fo
 ssh -i <PATH_TO_SPARK_TERRAFORM>/spark-terraform-master/TransE.pem ubuntu@<PUBLIC DNS>
  ```
 
-10. (first) execute on the master (one by one):
+10. Execute on the master (one by one):
  ```
 $HADOOP_HOME/sbin/start-dfs.sh
 $HADOOP_HOME/sbin/start-yarn.sh
-$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver' > /home/ubuntu/hadoop-start-master.sh
+$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
 $SPARK_HOME/sbin/start-master.sh
 hdfs dfs -put /home/ubuntu/dataset/train2.tsv /train2.tsv
 hdfs dfs -put /home/ubuntu/dataset/test2.tsv /test2.tsv
+$SPARK_HOME/sbin/start-slaves.sh spark://s01:7077
+
  ```
-And (after) execute on the slaves:
-```
-$SPARK_HOME/sbin/start-slave.sh spark://s01:7077
-```
 
 11. You are ready to execute TransE! Execute this command on the master
 ```

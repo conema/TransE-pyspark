@@ -112,8 +112,8 @@ if __name__ == "__main__":
 
     sc.addPyFile('TransEmodule.zip')
 
-    entity_embedding, label_embedding = utils.restore('/home/ubuntu/transe/entity_embedding_999.pkl',
-                                                      '/home/ubuntu/transe/label_embedding_999.pkl')
+    entity_embedding, label_embedding = utils.restore('/home/ubuntu/entity_embedding_999.pkl',
+                                                      '/home/ubuntu/label_embedding_999.pkl')
 
     ds_to_id, entities_to_id_map, label_to_id_map = utils.load_dataset(sc, "hdfs://s01:9000/train2.tsv")
 
