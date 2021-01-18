@@ -46,8 +46,8 @@ def testing(partition, test_entities_to_id, test_labels_to_id,
             continue
 
         # head
-        corrupted_entities = entity_embedding.value.vector + label_embedding.value.vector[l_train]
-        distances = np.apply_along_axis(lambda x: np.sum(np.abs(x - entity_embedding.value.vector[t_train])), 1, corrupted_entities)
+        corrupted_entities = entity_embedding.value.vector + label_embedding.value.vector[l_train] - entity_embedding.value.vector[t_train]
+        distances = np.apply_along_axis(lambda x: np.sum(np.square(x)), 1, corrupted_entities)
         indices = np.argsort(distances)
         rank = np.where(indices == h_train)
 
@@ -55,13 +55,13 @@ def testing(partition, test_entities_to_id, test_labels_to_id,
 
         # tail
         corrupted_entities = entity_embedding.value.vector[h_train] + label_embedding.value.vector[l_train]
-        distances = np.apply_along_axis(lambda x: np.sum(np.abs(corrupted_entities - x)), 1, entity_embedding.value.vector)
+        distances = np.apply_along_axis(lambda x: np.sum(np.square(corrupted_entities - x)), 1, entity_embedding.value.vector)
         indices = np.argsort(distances)
         rank = np.where(indices == t_train)
 
         rank_list.append(rank[0])
 
-        if i % 1000 == 0:
+        if i % 50 == 0:
             rank_list_baby = np.concatenate(rank_list, axis=0)
             print("Mean: " + str(np.mean(rank_list_baby)))
             print("Hit: " + str(np.mean(rank_list_baby <= 10)*100))
