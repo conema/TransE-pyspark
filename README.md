@@ -70,6 +70,7 @@ Where `<PATH_TO_SPARK_TERRAFORM>` is the path to the /spark-terraform-master/ fo
  terraform apply
  ```
  After a while (wait!) it should print some public DNS in a green color, these are the public dns of your instances.
+ It can happen that the command doesn't work (with an error like "Connection timeout"), usually it can be solved by doing a `terraform destroy` and re-do the `terraform apply`.
 
 9. Connect via ssh to all your instances via
  ```
@@ -92,6 +93,7 @@ $SPARK_HOME/sbin/start-slaves.sh spark://s01:7077
 ```
 /opt/spark-3.0.1-bin-hadoop2.7/bin/spark-submit --master spark://s01:7077  --executor-cores 2 --executor-memory 14g example.py
 ```
+Sometimes it happen that some iteration takes much more time than the others. The causes could be 1) in the install-all.sh there are more workers defined than the real number of workers (e.g. if we are using 2 workers, we need to delete s04, s05 and s06 from lines 166 and 204 of install-all.sh) 2) aws is throttling the resources of the instances. We usually resolve these problems by destroying the instances and waiting some time before re-running them.
 
 12. Remember to do `terraform destroy` to delete your EC2 instances
 
