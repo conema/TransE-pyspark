@@ -101,7 +101,18 @@ Sometimes it happen that some iteration takes much more time than the others. Th
 
 
 ## Experimental results
-TODO
+|  # workers 	| Iteration time (s)  	|  Total time (h) 	|
+|---	|---	|---	|
+|  1 	|   13.50 	|  3.75 	|
+|  2 	|   8	|  2.22 	|
+|  3 	|   6	|  1.67 	|
+|  4 	|   5.3	|  1.5 	|
+|  5 	|   4.9	|  1.35 	|
+
+|  Norm 	|  Mean Rank  	|  hits@k 	|
+|---	|---	|---	|
+|  L1 	|   326.98     | 36.87  	|
+|  L2 	|   	241.94     | 33.88   	|
 
 ## Contributors
 [<img alt="conema" src="https://avatars3.githubusercontent.com/u/12801153?v=4&s=117" width="117">](https://github.com/conema)|[<img alt="fbacci" src="https://avatars3.githubusercontent.com/u/17594819?v=4&s=117" width="117">](https://github.com/fbacci)|
