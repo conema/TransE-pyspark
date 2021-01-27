@@ -109,7 +109,7 @@ Sometimes it happen that some iteration takes much more time than the others. Th
 |  4 	|   5.3	|  1.5 	|
 |  5 	|   4.9	|  1.35 	|
 
-|  Norm 	|  Mean Rank  	|  hits@k 	|
+|  Norm 	|  Mean Rank  	|  hits@10 	|
 |---	|---	|---	|
 |  L1 	|   326.98     | 36.87  	|
 |  L2 	|   	241.94     | 33.88   	|
